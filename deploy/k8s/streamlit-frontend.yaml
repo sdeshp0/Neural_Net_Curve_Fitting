@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit-frontend
+  namespace: nn-curve-fit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streamlit-frontend
+  template:
+    metadata:
+      labels:
+        app: streamlit-frontend
+    spec:
+      containers:
+      - name: streamlit-frontend
+        image: streamlit-frontend:latest   # replace with your registry image
+        ports:
+        - containerPort: 8501
+        env:
+        - name: DATA_URL
+          value: http://data-service.nn-curve-fit.svc.cluster.local:8001
+        - name: MODEL_URL
+          value: http://model-service.nn-curve-fit.svc.cluster.local:8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit-frontend
+  namespace: nn-curve-fit
+spec:
+  selector:
+    app: streamlit-frontend
+  ports:
+  - port: 8501
+    targetPort: 8501
+  type: ClusterIP
