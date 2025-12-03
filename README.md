@@ -8,6 +8,7 @@ Users can:
 - Initialize a neural network with chosen hyperparameters (layers, units, activation, learning rate)
 - Train the model one epoch at a time or continuously via simulation
 - Visualize both the raw data and the fitted curve as training progresses
+- Track training progress with a loss curve plot (loss vs epoch)
 - See a schematic of the neural network architecture that reflects the actual configuration
 - Reset the dataset on demand to start a fresh experiment
 
@@ -47,7 +48,7 @@ A secondary purpose of this project is to recreate functionality of the original
           | provides synthetic        | handles init, training,
           | raw data (x, y_true)      | predictions, summaries
           |                           | continuous simulation,
-          +-------------+-------------+ dataset reset
+          +-------------+-------------+ dataset reset, loss curve
                         |
                         v
                 +-------------------+

@@ -24,7 +24,7 @@ units = st.sidebar.number_input("Units per hidden layer", min_value=1, max_value
 activation = st.sidebar.selectbox("Activation", ["ReLU", "Tanh", "Sigmoid"], index=0, key="activation")
 lr = st.sidebar.number_input("Learning rate", min_value=0.0001, max_value=0.1, value=0.01, step=0.001, format="%.4f", key="lr")
 
-# --- New: Reset dataset button ---
+# --- Reset dataset button ---
 if st.sidebar.button("Reset dataset", key="reset_btn"):
     try:
         requests.post(f"{MODEL_URL}/reset_data", timeout=5)
@@ -107,6 +107,15 @@ def draw_nn(fig_area, cfg):
                       yaxis=dict(showgrid=False, zeroline=False, showticklabels=False), height=350)
     fig_area.plotly_chart(fig, use_container_width=True)
 
+def draw_loss_curve(fig_area, losses):
+    if not losses:
+        return
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=list(range(1, len(losses)+1)), y=losses,
+                             mode="lines+markers", name="Loss", line=dict(color="red")))
+    fig.update_layout(title="Training Loss vs Epochs", xaxis_title="Epoch", yaxis_title="Loss")
+    fig_area.plotly_chart(fig, use_container_width=True)
+
 # --- Buttons ---
 col1, col2, col3, col4 = st.columns(4)
 with col1:
@@ -172,3 +181,6 @@ draw_nn(right, arch if "error" not in arch else {"num_layers": num_layers, "unit
 
 summ = get_summary()
 st.markdown(f"**Epochs:** {summ.get('epochs', 0)} | **Final loss:** {summ.get('final_loss', 'N/A')}")
+
+# --- Loss curve plot ---
+draw_loss_curve(st, summ.get("losses", []))
