@@ -1,0 +1,32 @@
+services:
+  data-service:
+    build:
+      context: ../backend/data_service
+    image: ${DATA_IMAGE}
+    container_name: data-service
+    ports:
+      - "8001:8001"
+
+  model-service:
+    build:
+      context: ../backend/model_service
+    image: ${MODEL_IMAGE}
+    container_name: model-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - data-service
+
+  streamlit-frontend:
+    build:
+      context: ../frontend
+    image: ${FRONTEND_IMAGE}
+    container_name: streamlit-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - DATA_URL=${DATA_URL}
+      - MODEL_URL=${MODEL_URL}
+    depends_on:
+      - data-service
+      - model-service
